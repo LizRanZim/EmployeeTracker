@@ -1,0 +1,117 @@
+Create package.json with mysql2, inquirer and console.table and express dependencies
+Run npm install
+Set up db schema
+Set up db seeds
+Set up db queries (make asynchronous?)
+Set up process.env stuff
+Set up inquirer functions
+Set up inquirer queries
+Tie inquirer response to console.table
+Set up console.table functionality for view all departments as a test
+Set up process.env variables
+Set up classes for employee, role, department, manager?
+
+//
+Once everything is set up, think about what order the steps will need to happen in
+
+See a menu with these options:
+
+Show menu 
+    Create a function that shows the menu of options at the start
+    Call the showMenu function at the completion of each set of activities below
+
+View all employees
+    this will run a function that Select * From employees and prints that table in the console
+
+Add an employee
+    this will run a function that asks for the first_name, last_name, role (choose from list), who is employee's manager,(choose from list of managers)
+
+
+    (pull list of managers dynamically from db as choices in inquirer)
+
+    (pull list of roles dynamically from db as choices in inquirer)
+
+    see example here for that: https://stackoverflow.com/questions/46210279/pass-objects-in-array-into-inquirer-list-choices
+
+    do you need a class? eg employee then new Employee
+
+    once you have that info, run a function to insert that data into the employees table
+    
+    console.log a confirm message that the data has been added
+
+    call showMenu
+
+Update an employee role
+    this will run a function that asks which employee role you want to Update (choose from list)
+
+    then it will ask what role would you like to choose for that employee (choose from list)
+
+    console.log a confirm message that the data has been updated
+
+     call showMenu
+
+
+View all roles
+    this will run a function that Select * From role and prints that table in the console
+
+Add a role
+    this will run a function that asks for the name of the role, the salary of the role, and asks which department the role belongs to (select from a list of choices)
+
+    console.log a confirm message that the data has been added to the database
+
+    call showMenu
+
+
+View all departments
+    this will run a function that Select * From department and prints that table in the console
+
+Add a department
+    this will run a function that asks for the name of the department you want to add
+    
+    this will run a function that Inserts the name of the department into the department table
+
+    console.log a confirm message that the data has been added to the database
+    
+    call showMenu
+
+Quit
+
+
+
+
+//
+Notes on console.table
+
+const cTable = require('console.table');
+
+const table = cTable.getTable([
+  {
+    name: 'foo',
+    age: 10
+  }, {
+    name: 'bar',
+    age: 20
+  }
+]);
+
+console.log(table);
+
+// prints
+name  age
+----  ---
+foo   10
+bar   20
+
+var values = [
+  ['max', 20],
+  ['joe', 30]
+];
+console.table(['name', 'age'], values);
+ 
+name  age
+----  ---
+max   20 
+joe   30
+
+This video walks through connecting inqurier with mysql insert.
+https://www.youtube.com/watch?v=gZugKSoAyoY
