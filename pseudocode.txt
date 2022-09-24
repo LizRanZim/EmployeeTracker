@@ -1,15 +1,15 @@
-Create package.json with mysql2, inquirer and console.table and express dependencies
-Run npm install
-Set up db schema
-Set up db seeds
+X Create package.json with mysql2, inquirer and console.table and express dependencies
+X Run npm install
+X Set up db schema (question on setup of manager id)
+X Set up db seeds
+X Set up process.env stuff (need to setup server.js to call it correctly)
 Set up db queries (make asynchronous?)
-Set up process.env stuff
 Set up inquirer functions
 Set up inquirer queries
 Tie inquirer response to console.table
 Set up console.table functionality for view all departments as a test
-Set up process.env variables
-Set up classes for employee, role, department, manager?
+
+Set up classes for employee, role, department, manager? Not sure how to do this, to use classes in this way.
 
 //
 Once everything is set up, think about what order the steps will need to happen in

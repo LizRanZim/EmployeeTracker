@@ -4,20 +4,29 @@ const express = require('express');
 const mysql = require('mysql2');
 // Import and require console.table
 const cTable = require('console.table');
+// Import and require sequalizer
+const sequelize = require('./config/connection');
 // Import and require inquirer
-// const inquirer = require('inquirer');
+const inquirer = require('inquirer');
+
+
 
 // if query reference is required form another folder use below
 // const runQuery = require('./helpers/')
 
-
-const PORT = process.env.PORT || 3001;
 const app = express();
+const PORT = process.env.PORT || 3001;
 
-// Express middleware
-app.use(express.urlencoded({ extended: false }));
+
+// // Express middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+// // Connect to the database before starting the Express.js server *** when I enable sequalize it ends inquirer before I can answer questions
+// sequelize.sync().then(() => {
+//     app.listen(PORT, () => console.log('Now listening'));
+//   });
+  
 // Connect to database
 const db = mysql.createConnection(
     {
@@ -30,6 +39,54 @@ const db = mysql.createConnection(
     },
     console.log(`Connected to the humans_db database.`)
 );
+
+app.listen(PORT, () => {
+    // console.log(`Server running on port ${PORT}`);
+});
+
+function showMenu() {
+
+    inquirer.prompt([
+        {
+            type: 'list',
+            message: 'What would you like to do?',
+            choices: ['View all employees', 'Add an employee', 'Update an employee role', 'View all roles', 'Add a role', 'View all departments', 'Add a department', 'Quit'],
+            name: 'menuChoice',
+
+        },
+
+    ])
+
+
+        .then((response) => {
+           console.log(response.menuChoice);
+           return
+           
+        })
+
+
+
+}
+
+
+showMenu();
+
+// DB Query examples:
+// querying the database for the count of ids of favorite in stock books
+// db.query('SELECT COUNT(id) AS total_count FROM favorite_books GROUP BY in_stock', function (err, results) {
+//     console.log(results);
+//   });
+  
+//   // querying the db to sum the quantity with a column named total_in_section, return maximum value and average quantity, and group by the section numbers (there are 5 sections based on seeds.sql)
+//   db.query('SELECT SUM(quantity) AS total_in_section, MAX(quantity) AS max_quantity, MIN(quantity) AS min_quantity, AVG(quantity) AS avg_quantity FROM favorite_books GROUP BY section', function (err, results) {
+//     console.log(results);
+//   });
+  
+  // checks for 404 error
+//   app.use((req, res) => {
+//     res.status(404).end();
+//   });
+  
 
 // Create a movie
 
@@ -85,6 +142,3 @@ const db = mysql.createConnection(
 
 // Default response for any other request (Not Found)
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
