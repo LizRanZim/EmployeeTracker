@@ -24,7 +24,11 @@ View all employees
     this will run a function that Select * From employees and prints that table in the console
 
 Add an employee
-    this will run a function that asks for the first_name, last_name, role (choose from list), who is employee's manager,(choose from list of managers)
+    this will run a function that asks for the first_name, last_name, role (choose from list)
+    'Customer Service Manager', 'Customer Service Agent', 'Shipping Manager', 'Shipping Packer', 'Accounting Manager', 'Accountant', 'IT Manager', 'Software Engineer'
+    
+    
+    , who is employee's manager,(choose from list of managers)
 
 
     (pull list of managers dynamically from db as choices in inquirer)

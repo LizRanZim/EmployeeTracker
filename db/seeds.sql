@@ -5,9 +5,9 @@ VALUES ("Customer Service"),
        ("Information Technology");
 
 INSERT INTO roles (department_id, title, salary)
-VALUES (1, "Customer Service Supervisor", "65000"),
+VALUES (1, "Customer Service Manager", "65000"),
        (1, "Customer Service Agent", "40000"),
-       (2, "Shipping Supervisor", "75000"),
+       (2, "Shipping Manager", "75000"),
        (2, "Shipping Packer", "45000"),
        (3, "Accounting Manager", "85000"),
        (3, "Accountant", "70000"),
