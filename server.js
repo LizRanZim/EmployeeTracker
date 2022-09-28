@@ -29,7 +29,7 @@ app.use(express.urlencoded({ extended: true }));
 // sequelize.sync().then(() => {
 //     app.listen(PORT, () => console.log('Now listening'));
 //   });
-  
+
 // Connect to database
 const db = mysql.createConnection(
     {
@@ -61,46 +61,46 @@ function showMenu() {
 
     ])
 
-// // Test inquiry menu
-//         .then((response) => {
-//            console.log(response.menuChoice);
-//            push 
-//            return
-           
-//         })
+        // // Test inquiry menu
+        //         .then((response) => {
+        //            console.log(response.menuChoice);
+        //            push 
+        //            return
 
-// Real function will be something like this:
+        //         })
 
-.then((response) => {
-    if (response.mainMenu === 'View all employees') {
-        viewEmployees();
+        // Real function will be something like this:
 
-    } else if (response.mainMenu === 'Add an employee') {
-        addEmployee();
-    
-    } else if (response.mainMenu === 'Update an employee role') {
-        updateRole();
-    
-    } else if (response.mainMenu === 'View all roles') {
-        viewRoles();
-       
-    } else if (response.mainMenu === 'Add a role') {
-        addRole();
-      
-    } else if (response.mainMenu === 'View all departments') {
-        viewDepartments();
-      
-    } else if (response.mainMenu === 'Add a department') {
-        addDepartment();
+        .then((response) => {
+            if (response.mainMenu === 'View all employees') {
+                viewEmployees();
 
-    } else if (response.mainMenu === 'Quit') {
-        process.exit();
-   
-    }
+            } else if (response.mainMenu === 'Add an employee') {
+                addEmployee();
+
+            } else if (response.mainMenu === 'Update an employee role') {
+                updateRole();
+
+            } else if (response.mainMenu === 'View all roles') {
+                viewRoles();
+
+            } else if (response.mainMenu === 'Add a role') {
+                addRole();
+
+            } else if (response.mainMenu === 'View all departments') {
+                viewDepartments();
+
+            } else if (response.mainMenu === 'Add a department') {
+                addDepartment();
+
+            } else if (response.mainMenu === 'Quit') {
+                process.exit();
+
+            }
 
 
-       
-    });
+
+        });
 }
 
 
@@ -109,136 +109,317 @@ showMenu();
 
 function viewEmployees() {
 
-  db.query('SELECT * from employees', function (err, results) {
-    if (err) throw err;
-    console.table(results)
-    
-  });
+    db.query('SELECT employees.id, employees.first_name, employees.last_name, employees.role_id, employees.manager_id from employees JOIN roles ON employees.role_id = roles.title', function (err, results) {
+        if (err) throw err;
+        console.table(results)
+        showMenu();
+    });
 
 }
 
 function addEmployee() {
-    inquirer
-    .prompt([
-        {
-            type: 'input',
-            message: 'What is the first name of the employee?',
-            name: 'employeeFirstName',
 
-        },
+    // get all the applicable role info
+    db.query('SELECT * from roles', function (err, results) {
+        if (err) throw err;
+        console.log(results)
 
-        {
-            type: 'input',
-            message: 'What is the last name of the employee?',
-            name: 'employeeLastName',
+        // input array of role info
+        // output array of role titles
 
-        },
-        {
-            type: 'list',
-            message: 'What is the role of the employee?',
-            name: 'employeeRole',
-            // ???how do I make this dynamic vs hard code choices? Maybe return the table values as strings and concat it somehow?
-            choices: ['Customer Service Manager', 'Customer Service Agent', 'Shipping Manager', 'Shipping Packer', 'Accounting Manager', 'Accountant', 'IT Manager', 'Software Engineer'],
-
-        },
-        {
-            type: 'list',
-            message: 'Who is the manager of the employee',
-            name: 'employeeManager',
-            // how do I make this dynamic vs hard code choices?
-            choices: ['Sporty Spice', 'Scary Spice', 'Ginger Spice', 'Nick Jonas'],
-
-        },
-
-    ])
-
-        .then((response) => {
-            const employee = new Employee(
-                response.employeeFirstName,
-                response.employeeLastName,
-                response.employeeRole,
-                response.employeeManager,
-                role = 'Employee'
-            )
-            employeeArray.push(employee);
-            console.log(employeeArray, "New employee Added");
-
-            showMenu();
-            
+        const roleTitles = results.map(function (role) {
+            return { name: role.title, value: role.id };
         })
+
+        // should display a list of role titles
+        console.log(roleTitles);
+
+        db.query('SELECT * from employees', function (err, managerResults) {
+            if (err) throw err;
+            console.log(managerResults)
+
+            const managerTitles = managerResults.map(function (manageTitle) {
+                return { name: manageTitle.first_name, value: manageTitle.manager_id };
+            })
+
+            console.log(managerTitles)
+            // map the manager info into a choices array
+
+
+
+            // then prompt
+            inquirer
+                .prompt([
+                    {
+                        type: 'input',
+                        message: 'What is the first name of the employee?',
+                        name: 'employeeFirstName',
+
+                    },
+
+                    {
+                        type: 'input',
+                        message: 'What is the last name of the employee?',
+                        name: 'employeeLastName',
+
+                    },
+                    {
+                        type: 'list',
+                        message: 'What is the role of the employee?',
+                        name: 'employeeRole',
+                        choices: roleTitles,
+
+
+                    },
+                    {
+                        type: 'list',
+                        message: 'Who is the manager of the employee',
+                        name: 'employeeManager',
+                        // use the mapped manager choices
+                        choices: managerTitles,
+
+                    },
+
+                ])
+
+                .then((response) => {
+                    console.log(response)
+
+                    const employee = new Employee(
+                        response.employeeFirstName,
+                        response.employeeLastName,
+                        response.employeeRole,
+                        response.employeeManager,
+
+                    )
+                    employeeArray.push(employee);
+                    console.log(employeeArray, "New employee Added to Array");
+                    // insert response into employees table
+                    db.query('INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)', [response.employeeFirstName, response.employeeLastName, response.employeeRole, response.employeeManager], function (err, results) {
+                        if (err || !(response.employeeFirstName)) {
+                            console.error(err);
+
+                        } else {
+                            console.log(response.employeeFirstName, response.employeeLastName, "added to employees DB");
+                        }
+                    });
+
+
+                    showMenu();
+                });
+        });
+    })
+}
+
+function updateRole() {
+
+    db.query('SELECT * from roles', function (err, results) {
+        if (err) throw err;
+        console.log(results)
+
+        // input array of role info
+        // output array of role titles
+
+        const roleTitles2 = results.map(function (role2) {
+            return { name: role2.title, value: role2.id };
+        })
+
+        // should display a list of role titles
+        console.log(roleTitles2);
+
+        db.query('SELECT * from employees', function (err, employeeResults) {
+            if (err) throw err;
+            // console.log(employeeResults)
+
+            const employeeNames = employeeResults.map(function (empName) {
+
+                let fullName = empName.first_name + " " + empName.last_name
+                return { name: fullName, value: empName.id };
+            })
+
+            // console.log(employeeNames)
+
+
+            inquirer
+                .prompt([
+                    {
+                        type: 'list',
+                        message: 'Which employee\'s role do you want to update?',
+                        choices: employeeNames,
+                        name: 'updatedEmployee'
+
+                    },
+
+                    {
+                        type: 'list',
+                        message: 'What role do you want to assign the selected employee?',
+                        choices: roleTitles2,
+                        name: 'updatedRole'
+
+                    },
+
+
+                ])
+
+                .then((response) => {
+                    // console.log(response)
+
+
+                    // insert response into employees table
+                    db.query('UPDATE employees SET role_id = ? where id = ?', [response.updatedRole, response.updatedEmployee], function (err, results) {
+                        if (err) {
+                            console.error(err);
+
+                        } else {
+
+                            // I can't get my confirm message to show without console.log(results) 
+                            console.log(results);
+                            console.log('This employee role has been updated');
+                        }
+                    });
+
+
+                    showMenu();
+                });
+        });
+    })
+}
+
+
+function addRole() {
+    db.query('SELECT * from departments', function (err, results) {
+        if (err) throw err;
+        console.log(results)
+
+        // input array of role info
+        // output array of role titles
+
+        const departmentRoles = results.map(function (role3) {
+            return { name: role3.department_name, value: role3.id };
+        })
+
+        // should display a list of role titles
+        console.log(departmentRoles);
+
+        inquirer
+            .prompt([
+                {
+                    type: 'input',
+                    message: 'What is the name of the role',
+                    name: 'roleName'
+
+                },
+
+                {
+                    type: 'input',
+                    message: 'What is the salary of the role',
+                    name: 'roleSalary'
+                },
+
+                {
+                    type: 'list',
+                    message: 'What department does the role belong to',
+                    choices: departmentRoles,
+                    name: 'departmentChoice'
+                },
+
+
+
+            ])
+
+            .then((response) => {
+                // console.log(response)
+
+
+                // insert response into departments table
+                db.query('INSERT INTO roles (salary, title, department_id) VALUES (?,?,?)', [response.roleSalary, response.roleName, response.departmentChoice],
+
+                    function (err, results) {
+                        if (err) {
+                            console.error(err);
+
+                        } else {
+
+                            // I can't get my confirm message to show without console.log(results) 
+                            console.log(results);
+                            console.log('This employee role has been added');
+                        }
+                    });
+
+
+
+
+                showMenu();
+            });
+    });
+}
+
+
+
+
+
+
+
+function viewRoles() {
+
+    db.query('SELECT * from roles', function (err, results) {
+        if (err) throw err;
+        console.table(results)
+        showMenu();
+    });
 
 }
 
 
 
-// DB Query examples:
-// querying the database for the count of ids of favorite in stock books
-// db.query('SELECT COUNT(id) AS total_count FROM favorite_books GROUP BY in_stock', function (err, results) {
-//     console.log(results);
-//   });
-  
-//   // querying the db to sum the quantity with a column named total_in_section, return maximum value and average quantity, and group by the section numbers (there are 5 sections based on seeds.sql)
-//   db.query('SELECT SUM(quantity) AS total_in_section, MAX(quantity) AS max_quantity, MIN(quantity) AS min_quantity, AVG(quantity) AS avg_quantity FROM favorite_books GROUP BY section', function (err, results) {
-//     console.log(results);
-//   });
-  
-  // checks for 404 error
-//   app.use((req, res) => {
-//     res.status(404).end();
-//   });
-  
 
-// Create a movie
+function viewDepartments() {
 
-// app.post('/api/add-movie', (req, res) => {
-//     console.log(req.body);
-//     db.query(`INSERT INTO movies (movie_name) VALUES (?)`, [req.body.movie_name], function (err, results) {
-//         if (err || !(req.body.movie_name)) {
-//             console.error(err);
-//             res.status(500).json(err);
-//         } else {
-//             console.log(req.body.movie_name);
-//             res.json(req.body.movie_name);
-//         }
-//     });
-// });
+    db.query('SELECT * from departments', function (err, results) {
+        if (err) throw err;
+        console.table(results)
+        showMenu();
+    });
 
-// Read all movies
-
-// app.get('/api/movies', (req, res) => {
-//     db.query('SELECT id, movie_name AS title FROM movies', function (err, results) {
-//         console.log(results);
-//         res.json(results);
-//     });
-// });
-
-// Delete a movie
-
-// app.delete('/api/movie/:id', (req, res) => {
-//     db.query('DELETE FROM movies WHERE id = ?', req.params.id, function (err, results) {
-//         console.log(results);
-//         res.json(results);
-//     });
-// });
-
-// Read list of all reviews and associated movie name using LEFT JOIN
-// app.get('/api/movie-reviews', (req, res) => {
-//     db.query('SELECT reviews.review, movies.movie_name AS title FROM movies JOIN reviews ON movies.id = reviews.movie_id', function (err, results) {
-//         console.log(results);
-//         res.json(results);
-//     });
-// });
+}
 
 
-// BONUS: Update review name
+function addDepartment() {
 
-// app.put('/api/review/:id', (req, res) => {
-//     db.query('UPDATE reviews SET review = ? WHERE id = ?', [req.body.review, req.params.id], function (err, results) {
-//         console.log(results);
-//         res.json(results);
-//     });
-// });
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                message: 'What is the name of the department you want to add?',
+                name: 'departmentName'
+
+            },
 
 
-// Default response for any other request (Not Found)
+        ])
 
+        .then((response) => {
+            // console.log(response)
+
+
+            // insert response into departments table
+            db.query('INSERT INTO departments (department_name) VALUES (?)', [response.departmentName],
+
+                function (err, results) {
+                    if (err) {
+                        console.error(err);
+
+                    } else {
+
+                        // I can't get my confirm message to show without console.log(results) 
+                        console.log(results);
+                        console.log('This department has been added');
+                    }
+                });
+
+
+
+
+            showMenu();
+        });
+}

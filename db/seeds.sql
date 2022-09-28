@@ -16,11 +16,11 @@ VALUES (1, "Customer Service Manager", "65000"),
 
 INSERT INTO employees (role_id, first_name, last_name, manager_id)
 VALUES (1, "Sporty", "Spice", 1),
-       (1, "Posh", "Spice", 0),
-       (2, "Scary", "Spice", 3),
-       (2, "Baby", "Spice", 0),
-       (3, "Ginger", "Spice", 5),
-       (3, "Kevin", "Jonas", 0),
-       (4, "Nick", "Jonas", 7),
-       (4, "Joe", "Jonas", 0);
+       (1, "Posh", "Spice", null),
+       (2, "Scary", "Spice", 2),
+       (2, "Baby", "Spice", null),
+       (3, "Ginger", "Spice", 3),
+       (3, "Kevin", "Jonas", null),
+       (4, "Nick", "Jonas", 4),
+       (4, "Joe", "Jonas", null);
 

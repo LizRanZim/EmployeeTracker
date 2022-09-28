@@ -19,13 +19,9 @@ CREATE TABLE roles (
 );
 
 CREATE TABLE employees (
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY 
-    -- IDENTITY (1,1)
-    ,
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(30),
     last_name VARCHAR(30),
     role_id INT, FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE SET NULL,
-    -- -- not sure on below for manager id setup to get this result manager_id: INT to hold reference to another employee that is the manager of the current employee (null if the employee has no manager)
-    manager_id INT
-    --  FOREIGN KEY (manager_id) REFERENCES (id) ON DELETE SET NULL
+    manager_id INT, FOREIGN KEY (manager_id) REFERENCES employees(id) ON DELETE SET NULL
 );

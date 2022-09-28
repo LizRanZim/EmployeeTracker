@@ -45,7 +45,7 @@ Add an employee
 
     call showMenu
 
-Update an employee role
+[x]Update an employee role
     this will run a function that asks which employee role you want to Update (choose from list)
 
     then it will ask what role would you like to choose for that employee (choose from list)
@@ -55,10 +55,10 @@ Update an employee role
      call showMenu
 
 
-View all roles
+[x]View all roles
     this will run a function that Select * From role and prints that table in the console
 
-Add a role
+[x]Add a role
     this will run a function that asks for the name of the role, the salary of the role, and asks which department the role belongs to (select from a list of choices)
 
     console.log a confirm message that the data has been added to the database
@@ -66,7 +66,7 @@ Add a role
     call showMenu
 
 
-View all departments
+[x]View all departments
     this will run a function that Select * From department and prints that table in the console
 
 Add a department
