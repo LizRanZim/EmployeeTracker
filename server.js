@@ -109,7 +109,7 @@ showMenu();
 
 function viewEmployees() {
 
-    db.query('SELECT employees.id, employees.first_name, employees.last_name, employees.role_id, employees.manager_id from employees JOIN roles ON employees.role_id = roles.title', function (err, results) {
+    db.query('SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, employees.manager_id from employees JOIN roles ON employees.id = roles.id', function (err, results) {
         if (err) throw err;
         console.table(results)
         showMenu();
