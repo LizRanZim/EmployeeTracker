@@ -109,7 +109,12 @@ showMenu();
 
 function viewEmployees() {
 
-    db.query('SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, employees.manager_id from employees JOIN roles ON employees.id = roles.id', function (err, results) {
+    db    
+    // .query('SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, employees.manager_id from employees JOIN roles ON employees.id = roles.id',
+    
+    .query('SELECT employees.id, employees.first_name, employees.last_name, employees.manager_id from employees' ,
+    
+    function (err, results) {
         if (err) throw err;
         console.table(results)
         showMenu();
@@ -185,6 +190,9 @@ function addEmployee() {
                 .then((response) => {
                     console.log(response)
 
+                    let providedFirstName = response.employeeFirstName;
+                    let providedLastName = response.employeeLastName;
+
                     const employee = new Employee(
                         response.employeeFirstName,
                         response.employeeLastName,
@@ -195,12 +203,14 @@ function addEmployee() {
                     employeeArray.push(employee);
                     console.log(employeeArray, "New employee Added to Array");
                     // insert response into employees table
-                    db.query('INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)', [response.employeeFirstName, response.employeeLastName, response.employeeRole, response.employeeManager], function (err, results) {
+                    db.query('INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)', 
+                    [response.employeeFirstName, response.employeeLastName, response.employeeRole, response.employeeManager], 
+                    function (err, results) {
                         if (err || !(response.employeeFirstName)) {
                             console.error(err);
 
                         } else {
-                            console.log(response.employeeFirstName, response.employeeLastName, "added to employees DB");
+                            console.log(`${providedFirstName} ${providedLastName}, added to employees DB`);
                         }
                     });
 
@@ -262,6 +272,8 @@ function updateRole() {
                 ])
 
                 .then((response) => {
+
+                   
                     // console.log(response)
 
 
