@@ -107,13 +107,13 @@ function showMenu() {
 // This starts the application
 showMenu();
 
-function viewEmployees() {
-
+function viewEmployees() { 
+    
+    // emp means employees database and man is a 2nd instance of employees database for join purposes
     db    
-    // .query('SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, employees.manager_id from employees JOIN roles ON employees.id = roles.id',
+    .query("SELECT emp.id, emp.first_name, emp.last_name, roles.title, departments.department_name AS department, roles.salary, CONCAT(man.first_name,' ',man.last_name) AS manager from employees emp LEFT JOIN employees man ON emp.manager_id = man.id JOIN roles on emp.role_id = roles.id LEFT JOIN departments on roles.department_id = departments.id",
     
-    .query('SELECT employees.id, employees.first_name, employees.last_name, employees.manager_id from employees' ,
-    
+       
     function (err, results) {
         if (err) throw err;
         console.table(results)
@@ -127,7 +127,7 @@ function addEmployee() {
     // get all the applicable role info
     db.query('SELECT * from roles', function (err, results) {
         if (err) throw err;
-        console.log(results)
+        // console.log(results)
 
         // input array of role info
         // output array of role titles
@@ -137,17 +137,17 @@ function addEmployee() {
         })
 
         // should display a list of role titles
-        console.log(roleTitles);
+        // console.log(roleTitles);
 
         db.query('SELECT * from employees', function (err, managerResults) {
             if (err) throw err;
-            console.log(managerResults)
+            // console.log(managerResults)
 
             const managerTitles = managerResults.map(function (manageTitle) {
                 return { name: manageTitle.first_name, value: manageTitle.manager_id };
             })
 
-            console.log(managerTitles)
+            // console.log(managerTitles)
             // map the manager info into a choices array
 
 
@@ -188,7 +188,7 @@ function addEmployee() {
                 ])
 
                 .then((response) => {
-                    console.log(response)
+                    // console.log(response)
 
                     let providedFirstName = response.employeeFirstName;
                     let providedLastName = response.employeeLastName;
@@ -201,7 +201,7 @@ function addEmployee() {
 
                     )
                     employeeArray.push(employee);
-                    console.log(employeeArray, "New employee Added to Array");
+                    console.log("New employee Added to Database");
                     // insert response into employees table
                     db.query('INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)', 
                     [response.employeeFirstName, response.employeeLastName, response.employeeRole, response.employeeManager], 
