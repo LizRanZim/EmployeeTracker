@@ -171,7 +171,7 @@ function addEmployee() {
                     )
                     employeeArray.push(employee);
 
-                    console.log(employee);
+                    // console.log(employee);
 
                     // logs entered data into command line
                     console.log(`${providedFirstName} ${providedLastName} added to employees DB`);
