@@ -1,5 +1,3 @@
-// Import and requrie express
-const express = require('express');
 // Import and require mysql2
 const mysql = require('mysql2');
 // Import and require console.table
@@ -13,23 +11,6 @@ const Employee = require('./lib/employee')
 
 const employeeArray = []
 
-
-// if query reference is required form another folder use below
-// const runQuery = require('./helpers/')
-
-const app = express();
-const PORT = process.env.PORT || 3001;
-
-
-// // Express middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// // Connect to the database before starting the Express.js server *** when I enable sequalize it ends inquirer before I can answer questions
-// sequelize.sync().then(() => {
-//     app.listen(PORT, () => console.log('Now listening'));
-//   });
-
 // Connect to database
 const db = mysql.createConnection(
     {
@@ -41,11 +22,7 @@ const db = mysql.createConnection(
     console.log(`Connected to the humans_db database.`)
 );
 
-app.listen(PORT, () => {
-    // console.log(`Server running on port ${PORT}`);
-});
 
-// let menuChoice =''
 function showMenu() {
 
     inquirer.prompt([
@@ -59,16 +36,7 @@ function showMenu() {
 
     ])
 
-        // // Test inquiry menu
-        //         .then((response) => {
-        //            console.log(response.menuChoice);
-        //            push 
-        //            return
-
-        //         })
-
-        // Real function will be something like this:
-
+  
         .then((response) => {
             if (response.mainMenu === 'View all employees') {
                 viewEmployees();
