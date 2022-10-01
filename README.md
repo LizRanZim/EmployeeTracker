@@ -24,7 +24,7 @@ Add department and view all departments.
 <a href="https://drive.google.com/file/d/1akG89W3RxAjgA4OsI7VzXoRFkabDMZ7u/view">
 Watch EmployeeTracker on Google Drive</a>
 
-## Link to GitHub code respository for application
+## Link to GitHub code repository for application
 
 <a href="https://github.com/LizRanZim/EmployeeTracker">
 https://github.com/LizRanZim/EmployeeTracker</a>
