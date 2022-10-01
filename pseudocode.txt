@@ -4,17 +4,16 @@ X Set up db schema (question on setup of manager id)
 X Set up db seeds
 X Set up process.env stuff (need to setup server.js to call it correctly)
 Set up db queries (make asynchronous?)
-Set up inquirer functions
-Set up inquirer queries
-Tie inquirer response to console.table
-Set up console.table functionality for view all departments as a test
+X Set up inquirer functions
+X Set up inquirer queries
+X Tie inquirer response to console.table
+X Set up console.table functionality for view all departments as a test
 
-Set up classes for employee, role, department, manager? Not sure how to do this, to use classes in this way.
-
+X Set up class for employee
 //
 Once everything is set up, think about what order the steps will need to happen in
 
-See a menu with these options:
+X See a menu with these options:
 
 Show menu 
     Create a function that shows the menu of options at the start

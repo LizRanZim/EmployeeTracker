@@ -174,7 +174,7 @@ function addEmployee() {
                     // console.log(employee);
 
                     // logs entered data into command line
-                    console.log(`${providedFirstName} ${providedLastName} added to employees DB`);
+                    console.log(`${providedFirstName} ${providedLastName} added to database`);
 
                     // insert response into employees table
                     db.query('INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)',
@@ -184,7 +184,7 @@ function addEmployee() {
                                 console.error(err);
 
                             } else {
-                                console.log(`${providedFirstName} ${providedLastName}, added to employees DB`);
+                                console.log(`${providedFirstName} ${providedLastName}, added to database`);
                             }
                         });
 

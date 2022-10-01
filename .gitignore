@@ -3,3 +3,5 @@ node_modules/
 .DS_Store/
 
 README_Assignment.md
+pseudocode.txt
+.env

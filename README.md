@@ -10,14 +10,19 @@ This a command line application.
 
 The following .gifs shows the application's appearance and functionality.
 
-<img src="TK"> Image to come.
+View all employees.
 
-<img src="TK"> Image to come
+<img src=".\assets\View_employees.GIF"> 
+
+Add department and view all departments.
+
+<img src=".\assets\Add_department.GIF"> 
+
 
 ## Link to video of application running
 
-<a href="TK"> Video to come.
-Watch TeamHTMLGenerator on Google Drive</a>
+<a href="https://drive.google.com/file/d/1akG89W3RxAjgA4OsI7VzXoRFkabDMZ7u/view">
+Watch EmployeeTracker on Google Drive</a>
 
 ## Link to GitHub code respository for application
 
