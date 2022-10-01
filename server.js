@@ -34,9 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 const db = mysql.createConnection(
     {
         host: 'localhost',
-        // MySQL username,
         user: 'root',
-        // TODO: Add MySQL password here
         password: '2Wins2!!',
         database: 'humans_db'
     },
@@ -107,18 +105,18 @@ function showMenu() {
 // This starts the application
 showMenu();
 
-function viewEmployees() { 
-    
-    // emp means employees database and man is a 2nd instance of employees database for join purposes
-    db    
-    .query("SELECT emp.id, emp.first_name, emp.last_name, roles.title, departments.department_name AS department, roles.salary, CONCAT(man.first_name,' ',man.last_name) AS manager from employees emp LEFT JOIN employees man ON emp.manager_id = man.id JOIN roles on emp.role_id = roles.id LEFT JOIN departments on roles.department_id = departments.id",
-    
-       
-    function (err, results) {
-        if (err) throw err;
-        console.table(results)
-        showMenu();
-    });
+function viewEmployees() {
+
+    // emp (employees) means employees database and man (managers) is a 2nd instance of employees database for join purposes
+    db
+        .query("SELECT emp.id, emp.first_name, emp.last_name, roles.title, departments.department_name AS department, roles.salary, CONCAT(man.first_name,' ',man.last_name) AS manager from employees emp LEFT JOIN employees man ON emp.manager_id = man.id JOIN roles on emp.role_id = roles.id LEFT JOIN departments on roles.department_id = departments.id",
+
+
+            function (err, results) {
+                if (err) throw err;
+                console.table(results)
+                showMenu();
+            });
 
 }
 
@@ -136,19 +134,20 @@ function addEmployee() {
             return { name: role.title, value: role.id };
         })
 
-        // should display a list of role titles
+        // display a list of role titles
         // console.log(roleTitles);
 
-        db.query('SELECT * from employees', function (err, managerResults) {
+        db.query('SELECT * from employees WHERE manager_id IS NULL', function (err, managerResults) {
             if (err) throw err;
             // console.log(managerResults)
 
+            // map the manager info into a choices array
+
             const managerTitles = managerResults.map(function (manageTitle) {
-                return { name: manageTitle.first_name, value: manageTitle.manager_id };
+                return { name: manageTitle.first_name, value: manageTitle.role_id };
             })
 
             // console.log(managerTitles)
-            // map the manager info into a choices array
 
 
 
@@ -178,11 +177,11 @@ function addEmployee() {
                     },
                     {
                         type: 'list',
-                        message: 'Who is the manager of the employee',
+                        message: 'Who is the manager of the employee?',
                         name: 'employeeManager',
                         // use the mapped manager choices
                         choices: managerTitles,
-
+                      
                     },
 
                 ])
@@ -193,6 +192,8 @@ function addEmployee() {
                     let providedFirstName = response.employeeFirstName;
                     let providedLastName = response.employeeLastName;
 
+                    // uses employee class to hold data
+
                     const employee = new Employee(
                         response.employeeFirstName,
                         response.employeeLastName,
@@ -201,18 +202,23 @@ function addEmployee() {
 
                     )
                     employeeArray.push(employee);
-                    console.log("New employee Added to Database");
-                    // insert response into employees table
-                    db.query('INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)', 
-                    [response.employeeFirstName, response.employeeLastName, response.employeeRole, response.employeeManager], 
-                    function (err, results) {
-                        if (err || !(response.employeeFirstName)) {
-                            console.error(err);
 
-                        } else {
-                            console.log(`${providedFirstName} ${providedLastName}, added to employees DB`);
-                        }
-                    });
+                    console.log(employee);
+
+                    // logs entered data into command line
+                    console.log(`${providedFirstName} ${providedLastName} added to employees DB`);
+
+                    // insert response into employees table
+                    db.query('INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)',
+                        [response.employeeFirstName, response.employeeLastName, response.employeeRole, response.employeeManager],
+                        function (err, results) {
+                            if (err || !(response.employeeFirstName)) {
+                                console.error(err);
+
+                            } else {
+                                console.log(`${providedFirstName} ${providedLastName}, added to employees DB`);
+                            }
+                        });
 
 
                     showMenu();
@@ -225,7 +231,7 @@ function updateRole() {
 
     db.query('SELECT * from roles', function (err, results) {
         if (err) throw err;
-        console.log(results)
+        // console.log(results)
 
         // input array of role info
         // output array of role titles
@@ -234,13 +240,14 @@ function updateRole() {
             return { name: role2.title, value: role2.id };
         })
 
-        // should display a list of role titles
-        console.log(roleTitles2);
+        // display a list of role titles
+        // console.log(roleTitles2);
 
         db.query('SELECT * from employees', function (err, employeeResults) {
             if (err) throw err;
             // console.log(employeeResults)
 
+            // copies and joins first and last name from employees
             const employeeNames = employeeResults.map(function (empName) {
 
                 let fullName = empName.first_name + " " + empName.last_name
@@ -273,35 +280,36 @@ function updateRole() {
 
                 .then((response) => {
 
-                   
+
                     // console.log(response)
 
+                    // logs entered data into command line
+
+                    console.log("This employee role has been updated");
 
                     // insert response into employees table
-                    db.query('UPDATE employees SET role_id = ? where id = ?', [response.updatedRole, response.updatedEmployee], function (err, results) {
-                        if (err) {
-                            console.error(err);
 
-                        } else {
+                    const updateThisRole = "UPDATE employees SET role_id = ? where id = ?"
 
-                            // I can't get my confirm message to show without console.log(results) 
-                            console.log(results);
-                            console.log('This employee role has been updated');
-                        }
-                    });
-
+                    db.query(updateThisRole, [response.updatedRole, response.updatedEmployee],
+                        function (err, results) {
+                            if (err) throw err;
+                            console.log(response.updatedEmployee + " has been updated");
+                        });
 
                     showMenu();
                 });
         });
-    })
+    });
 }
+
+
 
 
 function addRole() {
     db.query('SELECT * from departments', function (err, results) {
         if (err) throw err;
-        console.log(results)
+        // console.log(results)
 
         // input array of role info
         // output array of role titles
@@ -311,26 +319,26 @@ function addRole() {
         })
 
         // should display a list of role titles
-        console.log(departmentRoles);
+        // console.log(departmentRoles);
 
         inquirer
             .prompt([
                 {
                     type: 'input',
-                    message: 'What is the name of the role',
+                    message: 'What is the name of the role?',
                     name: 'roleName'
 
                 },
 
                 {
                     type: 'input',
-                    message: 'What is the salary of the role',
+                    message: 'What is the salary of the role?',
                     name: 'roleSalary'
                 },
 
                 {
                     type: 'list',
-                    message: 'What department does the role belong to',
+                    message: 'What department does the role belong to?',
                     choices: departmentRoles,
                     name: 'departmentChoice'
                 },
@@ -342,7 +350,9 @@ function addRole() {
             .then((response) => {
                 // console.log(response)
 
+                // logs updated data into command line
 
+                console.log(response.roleName + ' role has been added');
                 // insert response into departments table
                 db.query('INSERT INTO roles (salary, title, department_id) VALUES (?,?,?)', [response.roleSalary, response.roleName, response.departmentChoice],
 
@@ -353,7 +363,7 @@ function addRole() {
                         } else {
 
                             // I can't get my confirm message to show without console.log(results) 
-                            console.log(results);
+                            // console.log(results);
                             console.log('This employee role has been added');
                         }
                     });
@@ -413,6 +423,8 @@ function addDepartment() {
         .then((response) => {
             // console.log(response)
 
+            // logs updated data into command line
+            console.log(response.departmentName + " has been added")
 
             // insert response into departments table
             db.query('INSERT INTO departments (department_name) VALUES (?)', [response.departmentName],
@@ -424,7 +436,7 @@ function addDepartment() {
                     } else {
 
                         // I can't get my confirm message to show without console.log(results) 
-                        console.log(results);
+                        // console.log(results);
                         console.log('This department has been added');
                     }
                 });
